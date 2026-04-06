@@ -1,0 +1,23 @@
+# 虚拟环境
+backend/venv/
+
+# 环境变量（含密钥）
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Node（如有残留）
+node_modules/
+frontend/
+
+# 系统文件
+.DS_Store
+Thumbs.db

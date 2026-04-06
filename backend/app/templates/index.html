@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyTest - 基于 LLM 的黑盒测试工具</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+    <h1>EasyTest</h1>
+    <span>基于 LLM 的黑盒测试工具 | 等价类划分 · 边界值分析 · 测试用例生成</span>
+</nav>
+
+<div class="container">
+    <!-- 左侧：输入区域 -->
+    <div class="card">
+        <div class="card-header">
+            📝 输入系统需求
+        </div>
+        <div class="card-body">
+            <!-- 测试技术选择 -->
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="tech-ep" checked> 等价类划分 (EP)</label>
+                <label><input type="checkbox" id="tech-bva" checked> 边界值分析 (BVA)</label>
+                <label><input type="checkbox" id="tech-tc" checked> 测试用例生成</label>
+            </div>
+
+            <!-- 需求输入框 -->
+            <textarea id="requirements" placeholder="请输入系统功能需求描述...
+
+示例：一个在线购物系统，用户可以选择商品、输入数量、选择支付方式并完成下单。"></textarea>
+
+            <!-- 操作按钮 -->
+            <div class="btn-group">
+                <button class="btn btn-primary" id="analyzeBtn" onclick="analyze()">
+                    🚀 开始分析
+                </button>
+                <button class="example-btn" onclick="loadExample('vending')">📋 示例: 自动售货机</button>
+                <button class="example-btn" onclick="loadExample('login')">📋 示例: 登录系统</button>
+                <button class="example-btn" onclick="loadExample('shopping')">📋 示例: 购物车</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：状态/概览区域 -->
+    <div class="card">
+        <div class="card-header">
+            📊 分析概览
+        </div>
+        <div class="card-body">
+            <!-- 加载中 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在调用 DeepSeek 分析需求，请稍候...</p>
+                <p style="font-size:0.85rem;color:#94a3b8;margin-top:0.5rem">通常需要 10-30 秒</p>
+            </div>
+
+            <!-- 空状态 -->
+            <div id="emptyState" style="text-align:center;padding:3rem;color:#94a3b8;">
+                <p style="font-size:3rem;margin-bottom:1rem;">🧪</p>
+                <p>输入系统需求后点击「开始分析」</p>
+                <p style="font-size:0.85rem;margin-top:0.5rem;">工具将自动生成等价类划分、边界值分析和测试用例</p>
+            </div>
+
+            <!-- 统计概览 -->
+            <div class="result-section" id="statsSection">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="number" id="statEP">0</div>
+                        <div class="label">等价类</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statBV">0</div>
+                        <div class="label">边界值</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statTC">0</div>
+                        <div class="label">测试用例</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statVars">0</div>
+                        <div class="label">输入变量</div>
+                    </div>
+                </div>
+
+                <!-- 输入变量表 -->
+                <h3 style="margin-bottom:0.75rem;">输入变量</h3>
+                <div style="overflow-x:auto;">
+                    <table id="varsTable">
+                        <thead><tr><th>变量名</th><th>类型</th><th>描述</th><th>约束</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- 使用信息 -->
+                <div class="usage-info" id="usageInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下方全宽：详细结果 -->
+    <div class="card full-width result-section" id="resultSection">
+        <div class="card-header">
+            📋 详细结果
+        </div>
+        <div class="card-body">
+            <!-- 标签页 -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('ep')">等价类划分</div>
+                <div class="tab" onclick="switchTab('bva')">边界值分析</div>
+                <div class="tab" onclick="switchTab('tc')">测试用例</div>
+                <div class="tab" onclick="switchTab('prompt')">使用的 Prompt</div>
+                <div class="tab" onclick="switchTab('json')">原始 JSON</div>
+            </div>
+
+            <!-- 等价类划分表 -->
+            <div class="tab-content active" id="tab-ep">
+                <div style="overflow-x:auto;">
+                    <table id="epTable">
+                        <thead><tr><th>ID</th><th>变量</th><th>分区描述</th><th>类型</th><th>代表值</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 边界值分析表 -->
+            <div class="tab-content" id="tab-bva">
+                <div style="overflow-x:auto;">
+                    <table id="bvaTable">
+                        <thead><tr><th>ID</th><th>变量</th><th>边界描述</th><th>测试值</th><th>预期行为</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 测试用例表 -->
+            <div class="tab-content" id="tab-tc">
+                <div style="overflow-x:auto;">
+                    <table id="tcTable">
+                        <thead><tr><th>ID</th><th>描述</th><th>输入</th><th>预期结果</th><th>覆盖EP</th><th>覆盖BV</th><th>优先级</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Prompt 展示 -->
+            <div class="tab-content" id="tab-prompt">
+                <h3 style="margin-bottom:0.75rem;">系统提示词 (System Prompt)</h3>
+                <div class="prompt-display" id="systemPrompt"></div>
+                <h3 style="margin:1.5rem 0 0.75rem;">用户提示词 (User Prompt)</h3>
+                <div class="prompt-display" id="userPrompt"></div>
+            </div>
+
+            <!-- 原始 JSON -->
+            <div class="tab-content" id="tab-json">
+                <div class="prompt-display" id="rawJson"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
