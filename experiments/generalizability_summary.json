@@ -1,0 +1,41 @@
+[
+  {
+    "domain": "finance",
+    "time": 178.9,
+    "vars": 7,
+    "ep": 19,
+    "bv": 9,
+    "tc": 15,
+    "ep_valid": 10,
+    "ep_invalid": 9,
+    "tc_high": 7,
+    "tc_with_ep": 15,
+    "tc_with_bv": 9
+  },
+  {
+    "domain": "education",
+    "time": 141.3,
+    "vars": 6,
+    "ep": 21,
+    "bv": 13,
+    "tc": 20,
+    "ep_valid": 10,
+    "ep_invalid": 11,
+    "tc_high": 12,
+    "tc_with_ep": 20,
+    "tc_with_bv": 16
+  },
+  {
+    "domain": "game",
+    "time": 167.9,
+    "vars": 7,
+    "ep": 23,
+    "bv": 26,
+    "tc": 15,
+    "ep_valid": 11,
+    "ep_invalid": 12,
+    "tc_high": 9,
+    "tc_with_ep": 15,
+    "tc_with_bv": 12
+  }
+]

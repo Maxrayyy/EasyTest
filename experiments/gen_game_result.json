@@ -1,0 +1,826 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "role_name",
+        "description": "角色名称",
+        "type": "string",
+        "constraints": "长度2-12字符，允许中文、英文、数字，不允许特殊字符和空格，不能与已有角色重复"
+      },
+      {
+        "name": "strength",
+        "description": "力量属性",
+        "type": "numeric",
+        "constraints": "1-10点整数，分配后四项属性总和必须等于20"
+      },
+      {
+        "name": "agility",
+        "description": "敏捷属性",
+        "type": "numeric",
+        "constraints": "1-10点整数，分配后四项属性总和必须等于20"
+      },
+      {
+        "name": "intelligence",
+        "description": "智力属性",
+        "type": "numeric",
+        "constraints": "1-10点整数，分配后四项属性总和必须等于20"
+      },
+      {
+        "name": "constitution",
+        "description": "体质属性",
+        "type": "numeric",
+        "constraints": "1-10点整数，分配后四项属性总和必须等于20"
+      },
+      {
+        "name": "profession",
+        "description": "职业选择",
+        "type": "enum",
+        "constraints": "战士、法师、盗贼、牧师，需满足相应属性要求"
+      },
+      {
+        "name": "level",
+        "description": "角色等级",
+        "type": "numeric",
+        "constraints": "1-100整数，初始为1，每升一级获得5点属性点"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "role_name",
+        "partition": "有效名称：长度2-12字符，仅含中文/英文/数字，无特殊字符和空格",
+        "type": "valid",
+        "representative_value": "战士A1"
+      },
+      {
+        "id": "EP2",
+        "variable": "role_name",
+        "partition": "无效名称：长度小于2字符",
+        "type": "invalid",
+        "representative_value": "A"
+      },
+      {
+        "id": "EP3",
+        "variable": "role_name",
+        "partition": "无效名称：长度大于12字符",
+        "type": "invalid",
+        "representative_value": "这是一个超长的角色名称测试"
+      },
+      {
+        "id": "EP4",
+        "variable": "role_name",
+        "partition": "无效名称：包含特殊字符",
+        "type": "invalid",
+        "representative_value": "战士@#"
+      },
+      {
+        "id": "EP5",
+        "variable": "role_name",
+        "partition": "无效名称：包含空格",
+        "type": "invalid",
+        "representative_value": "战 士"
+      },
+      {
+        "id": "EP6",
+        "variable": "role_name",
+        "partition": "无效名称：与已有角色重复",
+        "type": "invalid",
+        "representative_value": "已存在角色名"
+      },
+      {
+        "id": "EP7",
+        "variable": "strength",
+        "partition": "有效力量值：1-10整数",
+        "type": "valid",
+        "representative_value": "5"
+      },
+      {
+        "id": "EP8",
+        "variable": "strength",
+        "partition": "无效力量值：小于1",
+        "type": "invalid",
+        "representative_value": "0"
+      },
+      {
+        "id": "EP9",
+        "variable": "strength",
+        "partition": "无效力量值：大于10",
+        "type": "invalid",
+        "representative_value": "11"
+      },
+      {
+        "id": "EP10",
+        "variable": "strength",
+        "partition": "无效力量值：非整数",
+        "type": "invalid",
+        "representative_value": "5.5"
+      },
+      {
+        "id": "EP11",
+        "variable": "agility",
+        "partition": "有效敏捷值：1-10整数",
+        "type": "valid",
+        "representative_value": "6"
+      },
+      {
+        "id": "EP12",
+        "variable": "intelligence",
+        "partition": "有效智力值：1-10整数",
+        "type": "valid",
+        "representative_value": "7"
+      },
+      {
+        "id": "EP13",
+        "variable": "constitution",
+        "partition": "有效体质值：1-10整数",
+        "type": "valid",
+        "representative_value": "5"
+      },
+      {
+        "id": "EP14",
+        "partition": "有效属性分配：四项属性总和等于20",
+        "type": "valid",
+        "variable": "strength,agility,intelligence,constitution",
+        "representative_value": "5,6,7,2"
+      },
+      {
+        "id": "EP15",
+        "partition": "无效属性分配：四项属性总和不等于20",
+        "type": "invalid",
+        "variable": "strength,agility,intelligence,constitution",
+        "representative_value": "5,5,5,5"
+      },
+      {
+        "id": "EP16",
+        "variable": "profession",
+        "partition": "有效职业选择：战士（力量>=5，体质>=5）",
+        "type": "valid",
+        "representative_value": "战士"
+      },
+      {
+        "id": "EP17",
+        "variable": "profession",
+        "partition": "有效职业选择：法师（智力>=7）",
+        "type": "valid",
+        "representative_value": "法师"
+      },
+      {
+        "id": "EP18",
+        "variable": "profession",
+        "partition": "有效职业选择：盗贼（敏捷>=6）",
+        "type": "valid",
+        "representative_value": "盗贼"
+      },
+      {
+        "id": "EP19",
+        "variable": "profession",
+        "partition": "有效职业选择：牧师（智力>=4，体质>=4）",
+        "type": "valid",
+        "representative_value": "牧师"
+      },
+      {
+        "id": "EP20",
+        "variable": "profession",
+        "partition": "无效职业选择：属性不满足职业要求",
+        "type": "invalid",
+        "representative_value": "战士（力量=4，体质=5）"
+      },
+      {
+        "id": "EP21",
+        "variable": "level",
+        "partition": "有效等级：1-100整数",
+        "type": "valid",
+        "representative_value": "50"
+      },
+      {
+        "id": "EP22",
+        "variable": "level",
+        "partition": "无效等级：小于1",
+        "type": "invalid",
+        "representative_value": "0"
+      },
+      {
+        "id": "EP23",
+        "variable": "level",
+        "partition": "无效等级：大于100",
+        "type": "invalid",
+        "representative_value": "101"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "role_name",
+        "boundary": "名称长度边界：2字符",
+        "test_values": [
+          "战士",
+          "A1"
+        ],
+        "expected_behavior": "应接受2字符名称"
+      },
+      {
+        "id": "BV2",
+        "variable": "role_name",
+        "boundary": "名称长度边界：12字符",
+        "test_values": [
+          "一二三四五六七八九十十一",
+          "ABCDEFGHIJKL"
+        ],
+        "expected_behavior": "应接受12字符名称"
+      },
+      {
+        "id": "BV3",
+        "variable": "role_name",
+        "boundary": "名称长度边界：1字符（无效边界）",
+        "test_values": [
+          "A",
+          "一"
+        ],
+        "expected_behavior": "应拒绝1字符名称"
+      },
+      {
+        "id": "BV4",
+        "variable": "role_name",
+        "boundary": "名称长度边界：13字符（无效边界）",
+        "test_values": [
+          "一二三四五六七八九十十一十二",
+          "ABCDEFGHIJKLM"
+        ],
+        "expected_behavior": "应拒绝13字符名称"
+      },
+      {
+        "id": "BV5",
+        "variable": "strength",
+        "boundary": "力量值边界：1点",
+        "test_values": [
+          "1"
+        ],
+        "expected_behavior": "应接受最小力量值1"
+      },
+      {
+        "id": "BV6",
+        "variable": "strength",
+        "boundary": "力量值边界：10点",
+        "test_values": [
+          "10"
+        ],
+        "expected_behavior": "应接受最大力量值10"
+      },
+      {
+        "id": "BV7",
+        "variable": "strength",
+        "boundary": "力量值边界：0点（无效边界）",
+        "test_values": [
+          "0"
+        ],
+        "expected_behavior": "应拒绝力量值0"
+      },
+      {
+        "id": "BV8",
+        "variable": "strength",
+        "boundary": "力量值边界：11点（无效边界）",
+        "test_values": [
+          "11"
+        ],
+        "expected_behavior": "应拒绝力量值11"
+      },
+      {
+        "id": "BV9",
+        "variable": "agility",
+        "boundary": "敏捷值边界：1点和10点",
+        "test_values": [
+          "1",
+          "10"
+        ],
+        "expected_behavior": "应接受敏捷值1和10"
+      },
+      {
+        "id": "BV10",
+        "variable": "intelligence",
+        "boundary": "智力值边界：1点和10点",
+        "test_values": [
+          "1",
+          "10"
+        ],
+        "expected_behavior": "应接受智力值1和10"
+      },
+      {
+        "id": "BV11",
+        "variable": "constitution",
+        "boundary": "体质值边界：1点和10点",
+        "test_values": [
+          "1",
+          "10"
+        ],
+        "expected_behavior": "应接受体质值1和10"
+      },
+      {
+        "id": "BV12",
+        "partition": "属性总和边界：总和等于20",
+        "test_values": [
+          "5,5,5,5",
+          "1,1,9,9",
+          "10,1,1,8"
+        ],
+        "variable": "strength,agility,intelligence,constitution",
+        "expected_behavior": "应接受总和为20的属性分配"
+      },
+      {
+        "id": "BV13",
+        "partition": "属性总和边界：总和等于19（无效边界）",
+        "test_values": [
+          "5,5,5,4"
+        ],
+        "variable": "strength,agility,intelligence,constitution",
+        "expected_behavior": "应拒绝总和不为20的属性分配"
+      },
+      {
+        "id": "BV14",
+        "partition": "属性总和边界：总和等于21（无效边界）",
+        "test_values": [
+          "5,5,5,6"
+        ],
+        "variable": "strength,agility,intelligence,constitution",
+        "expected_behavior": "应拒绝总和不为20的属性分配"
+      },
+      {
+        "id": "BV15",
+        "variable": "profession",
+        "boundary": "战士职业边界：力量=5，体质=5",
+        "test_values": [
+          "战士"
+        ],
+        "expected_behavior": "应接受刚好满足战士要求的属性"
+      },
+      {
+        "id": "BV16",
+        "variable": "profession",
+        "boundary": "战士职业边界：力量=4，体质=5（无效边界）",
+        "test_values": [
+          "战士"
+        ],
+        "expected_behavior": "应拒绝力量不足的战士选择"
+      },
+      {
+        "id": "BV17",
+        "variable": "profession",
+        "boundary": "法师职业边界：智力=7",
+        "test_values": [
+          "法师"
+        ],
+        "expected_behavior": "应接受刚好满足法师要求的属性"
+      },
+      {
+        "id": "BV18",
+        "variable": "profession",
+        "boundary": "法师职业边界：智力=6（无效边界）",
+        "test_values": [
+          "法师"
+        ],
+        "expected_behavior": "应拒绝智力不足的法师选择"
+      },
+      {
+        "id": "BV19",
+        "variable": "profession",
+        "boundary": "盗贼职业边界：敏捷=6",
+        "test_values": [
+          "盗贼"
+        ],
+        "expected_behavior": "应接受刚好满足盗贼要求的属性"
+      },
+      {
+        "id": "BV20",
+        "variable": "profession",
+        "boundary": "盗贼职业边界：敏捷=5（无效边界）",
+        "test_values": [
+          "盗贼"
+        ],
+        "expected_behavior": "应拒绝敏捷不足的盗贼选择"
+      },
+      {
+        "id": "BV21",
+        "variable": "profession",
+        "boundary": "牧师职业边界：智力=4，体质=4",
+        "test_values": [
+          "牧师"
+        ],
+        "expected_behavior": "应接受刚好满足牧师要求的属性"
+      },
+      {
+        "id": "BV22",
+        "variable": "profession",
+        "boundary": "牧师职业边界：智力=3，体质=4（无效边界）",
+        "test_values": [
+          "牧师"
+        ],
+        "expected_behavior": "应拒绝智力不足的牧师选择"
+      },
+      {
+        "id": "BV23",
+        "variable": "level",
+        "boundary": "等级边界：1级",
+        "test_values": [
+          "1"
+        ],
+        "expected_behavior": "应接受最小等级1"
+      },
+      {
+        "id": "BV24",
+        "variable": "level",
+        "boundary": "等级边界：100级",
+        "test_values": [
+          "100"
+        ],
+        "expected_behavior": "应接受最大等级100"
+      },
+      {
+        "id": "BV25",
+        "variable": "level",
+        "boundary": "等级边界：0级（无效边界）",
+        "test_values": [
+          "0"
+        ],
+        "expected_behavior": "应拒绝等级0"
+      },
+      {
+        "id": "BV26",
+        "variable": "level",
+        "boundary": "等级边界：101级（无效边界）",
+        "test_values": [
+          "101"
+        ],
+        "expected_behavior": "应拒绝等级101"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "有效角色创建：正常名称，属性总和20，满足战士要求",
+        "inputs": {
+          "role_name": "战士A1",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建成功",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP11",
+          "EP12",
+          "EP13",
+          "EP14",
+          "EP16",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV12",
+          "BV15"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "无效角色名称：长度1字符",
+        "inputs": {
+          "role_name": "A",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示名称长度不符合要求",
+        "covers_ep": [
+          "EP2"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC3",
+        "description": "无效角色名称：长度13字符",
+        "inputs": {
+          "role_name": "ABCDEFGHIJKLM",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示名称长度不符合要求",
+        "covers_ep": [
+          "EP3"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC4",
+        "description": "无效角色名称：包含特殊字符",
+        "inputs": {
+          "role_name": "战士@#",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示名称包含非法字符",
+        "covers_ep": [
+          "EP4"
+        ],
+        "covers_bv": [],
+        "priority": "medium"
+      },
+      {
+        "id": "TC5",
+        "description": "无效属性分配：力量值0",
+        "inputs": {
+          "role_name": "法师B2",
+          "strength": "0",
+          "agility": "7",
+          "intelligence": "7",
+          "constitution": "6",
+          "profession": "法师",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示属性值超出范围",
+        "covers_ep": [
+          "EP8"
+        ],
+        "covers_bv": [
+          "BV7"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC6",
+        "description": "无效属性分配：力量值11",
+        "inputs": {
+          "role_name": "盗贼C3",
+          "strength": "11",
+          "agility": "6",
+          "intelligence": "1",
+          "constitution": "2",
+          "profession": "盗贼",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示属性值超出范围",
+        "covers_ep": [
+          "EP9"
+        ],
+        "covers_bv": [
+          "BV8"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC7",
+        "description": "无效属性分配：总和19",
+        "inputs": {
+          "role_name": "牧师D4",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "4",
+          "profession": "牧师",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示属性总和必须等于20",
+        "covers_ep": [
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV13"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC8",
+        "description": "无效职业选择：属性不满足战士要求",
+        "inputs": {
+          "role_name": "战士E5",
+          "strength": "4",
+          "agility": "6",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示属性不满足职业要求",
+        "covers_ep": [
+          "EP20"
+        ],
+        "covers_bv": [
+          "BV16"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC9",
+        "description": "有效角色创建：边界名称长度2字符，属性边界值1和10，满足法师要求",
+        "inputs": {
+          "role_name": "法师",
+          "strength": "1",
+          "agility": "1",
+          "intelligence": "10",
+          "constitution": "8",
+          "profession": "法师",
+          "level": "1"
+        },
+        "expected_result": "角色创建成功",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP11",
+          "EP12",
+          "EP13",
+          "EP14",
+          "EP17",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV1",
+          "BV5",
+          "BV9",
+          "BV10",
+          "BV11",
+          "BV12",
+          "BV17"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC10",
+        "description": "有效角色创建：边界名称长度12字符，属性边界值10，满足盗贼要求",
+        "inputs": {
+          "role_name": "一二三四五六七八九十十一",
+          "strength": "1",
+          "agility": "10",
+          "intelligence": "1",
+          "constitution": "8",
+          "profession": "盗贼",
+          "level": "1"
+        },
+        "expected_result": "角色创建成功",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP11",
+          "EP12",
+          "EP13",
+          "EP14",
+          "EP18",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV2",
+          "BV6",
+          "BV9",
+          "BV10",
+          "BV11",
+          "BV12",
+          "BV19"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC11",
+        "description": "无效等级：等级0",
+        "inputs": {
+          "role_name": "战士F6",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "0"
+        },
+        "expected_result": "角色创建失败，提示等级无效",
+        "covers_ep": [
+          "EP22"
+        ],
+        "covers_bv": [
+          "BV25"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC12",
+        "description": "无效等级：等级101",
+        "inputs": {
+          "role_name": "法师G7",
+          "strength": "1",
+          "agility": "1",
+          "intelligence": "10",
+          "constitution": "8",
+          "profession": "法师",
+          "level": "101"
+        },
+        "expected_result": "角色创建失败，提示等级无效",
+        "covers_ep": [
+          "EP23"
+        ],
+        "covers_bv": [
+          "BV26"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC13",
+        "description": "有效角色创建：边界等级1和100，满足牧师要求",
+        "inputs": {
+          "role_name": "牧师H8",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "牧师",
+          "level": "100"
+        },
+        "expected_result": "角色创建成功",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP11",
+          "EP12",
+          "EP13",
+          "EP14",
+          "EP19",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV12",
+          "BV21",
+          "BV24"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC14",
+        "description": "无效属性分配：非整数属性值",
+        "inputs": {
+          "role_name": "战士I9",
+          "strength": "5.5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "4.5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示属性值必须为整数",
+        "covers_ep": [
+          "EP10"
+        ],
+        "covers_bv": [],
+        "priority": "low"
+      },
+      {
+        "id": "TC15",
+        "description": "无效角色名称：与已有角色重复",
+        "inputs": {
+          "role_name": "已存在角色名",
+          "strength": "5",
+          "agility": "5",
+          "intelligence": "5",
+          "constitution": "5",
+          "profession": "战士",
+          "level": "1"
+        },
+        "expected_result": "角色创建失败，提示名称已存在",
+        "covers_ep": [
+          "EP6"
+        ],
+        "covers_bv": [],
+        "priority": "medium"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 23,
+      "covered_ep": 23,
+      "total_bv": 26,
+      "covered_bv": 26,
+      "total_test_cases": 15
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n角色创建系统\n\n功能需求:\nR1. 角色名称:\n   - 长度: 2-12 个字符\n   - 允许中文、英文、数字\n   - 不允许特殊字符和空格\n   - 名称不能与已有角色重复\n\nR2. 属性点分配:\n   - 初始总属性点: 20 点\n   - 四项属性: 力量、敏捷、智力、体质\n   - 每项属性最低 1 点，最高 10 点\n   - 分配完后总和必须等于 20\n\nR3. 职业选择:\n   - 战士: 要求力量 >= 5, 体质 >= 5\n   - 法师: 要求智力 >= 7\n   - 盗贼: 要求敏捷 >= 6\n   - 牧师: 要求智力 >= 4, 体质 >= 4\n\nR4. 等级限制:\n   - 初始等级: 1\n   - 最高等级: 100\n   - 每升一级获得 5 点属性点\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 747,
+    "completion_tokens": 5466
+  }
+}

@@ -1,0 +1,509 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "username",
+        "description": "用户名",
+        "type": "string",
+        "constraints": "长度4-20字符，只允许字母、数字、下划线，不能以数字开头"
+      },
+      {
+        "name": "password",
+        "description": "密码",
+        "type": "string",
+        "constraints": "长度8-32字符，必须包含至少一个大写字母、一个小写字母、一个数字，可选特殊字符!@#$%^&*"
+      },
+      {
+        "name": "login_attempts",
+        "description": "连续登录失败次数",
+        "type": "numeric",
+        "constraints": "整数，用于触发锁定和验证码机制"
+      },
+      {
+        "name": "captcha_required",
+        "description": "是否需要验证码",
+        "type": "boolean",
+        "constraints": "连续失败2次后为true"
+      },
+      {
+        "name": "captcha_input",
+        "description": "验证码输入",
+        "type": "string",
+        "constraints": "4位数字，有效期60秒"
+      },
+      {
+        "name": "account_locked",
+        "description": "账户是否锁定",
+        "type": "boolean",
+        "constraints": "连续失败3次锁定15分钟，连续失败5次锁定24小时"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "username",
+        "partition": "有效用户名：长度4-20，字母/数字/下划线，不以数字开头",
+        "type": "valid",
+        "representative_value": "User_123"
+      },
+      {
+        "id": "EP2",
+        "variable": "username",
+        "partition": "无效用户名：长度<4",
+        "type": "invalid",
+        "representative_value": "Abc"
+      },
+      {
+        "id": "EP3",
+        "variable": "username",
+        "partition": "无效用户名：长度>20",
+        "type": "invalid",
+        "representative_value": "ThisIsAVeryLongUsername123456"
+      },
+      {
+        "id": "EP4",
+        "variable": "username",
+        "partition": "无效用户名：以数字开头",
+        "type": "invalid",
+        "representative_value": "123User"
+      },
+      {
+        "id": "EP5",
+        "variable": "username",
+        "partition": "无效用户名：包含非法字符",
+        "type": "invalid",
+        "representative_value": "User@Name"
+      },
+      {
+        "id": "EP6",
+        "variable": "password",
+        "partition": "有效密码：长度8-32，包含大写、小写、数字，可选特殊字符",
+        "type": "valid",
+        "representative_value": "Pass123!"
+      },
+      {
+        "id": "EP7",
+        "variable": "password",
+        "partition": "无效密码：长度<8",
+        "type": "invalid",
+        "representative_value": "Abc123"
+      },
+      {
+        "id": "EP8",
+        "variable": "password",
+        "partition": "无效密码：长度>32",
+        "type": "invalid",
+        "representative_value": "ThisIsAVeryLongPassword1234567890!"
+      },
+      {
+        "id": "EP9",
+        "variable": "password",
+        "partition": "无效密码：缺少大写字母",
+        "type": "invalid",
+        "representative_value": "pass123!"
+      },
+      {
+        "id": "EP10",
+        "variable": "password",
+        "partition": "无效密码：缺少小写字母",
+        "type": "invalid",
+        "representative_value": "PASS123!"
+      },
+      {
+        "id": "EP11",
+        "variable": "password",
+        "partition": "无效密码：缺少数字",
+        "type": "invalid",
+        "representative_value": "Password!"
+      },
+      {
+        "id": "EP12",
+        "variable": "login_attempts",
+        "partition": "有效登录尝试：0-2次失败",
+        "type": "valid",
+        "representative_value": "1"
+      },
+      {
+        "id": "EP13",
+        "variable": "login_attempts",
+        "partition": "触发验证码：连续失败2次",
+        "type": "valid",
+        "representative_value": "2"
+      },
+      {
+        "id": "EP14",
+        "variable": "login_attempts",
+        "partition": "触发15分钟锁定：连续失败3次",
+        "type": "valid",
+        "representative_value": "3"
+      },
+      {
+        "id": "EP15",
+        "variable": "login_attempts",
+        "partition": "触发24小时锁定：连续失败5次",
+        "type": "valid",
+        "representative_value": "5"
+      },
+      {
+        "id": "EP16",
+        "variable": "captcha_input",
+        "partition": "有效验证码：4位数字，在有效期内",
+        "type": "valid",
+        "representative_value": "1234"
+      },
+      {
+        "id": "EP17",
+        "variable": "captcha_input",
+        "partition": "无效验证码：非4位数字",
+        "type": "invalid",
+        "representative_value": "12A4"
+      },
+      {
+        "id": "EP18",
+        "variable": "captcha_input",
+        "partition": "无效验证码：已过期",
+        "type": "invalid",
+        "representative_value": "5678"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "username",
+        "boundary": "用户名长度边界：3,4,5,19,20,21字符",
+        "test_values": [
+          "Abc",
+          "Abcd",
+          "Abcde",
+          "User123456789012345",
+          "User1234567890123456",
+          "User12345678901234567"
+        ],
+        "expected_behavior": "长度3和21应失败，长度4、5、19、20应成功"
+      },
+      {
+        "id": "BV2",
+        "variable": "username",
+        "boundary": "用户名字符边界：以数字开头 vs 以字母/下划线开头",
+        "test_values": [
+          "1User",
+          "User1",
+          "_User"
+        ],
+        "expected_behavior": "1User应失败，User1和_User应成功"
+      },
+      {
+        "id": "BV3",
+        "variable": "password",
+        "boundary": "密码长度边界：7,8,9,31,32,33字符",
+        "test_values": [
+          "Abc123!",
+          "Abc123!@",
+          "Abc123!@#",
+          "Pass123456789012345678901234567890!",
+          "Pass1234567890123456789012345678901!",
+          "Pass12345678901234567890123456789012!"
+        ],
+        "expected_behavior": "长度7和33应失败，长度8、9、31、32应成功"
+      },
+      {
+        "id": "BV4",
+        "variable": "password",
+        "boundary": "密码字符组合边界：刚好满足大写、小写、数字要求",
+        "test_values": [
+          "Pass123",
+          "pass123",
+          "PASS123",
+          "Password"
+        ],
+        "expected_behavior": "Pass123应成功，其他应失败"
+      },
+      {
+        "id": "BV5",
+        "variable": "login_attempts",
+        "boundary": "登录尝试边界：2,3,4,5次失败",
+        "test_values": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "expected_behavior": "2次触发验证码，3次锁定15分钟，5次锁定24小时"
+      },
+      {
+        "id": "BV6",
+        "variable": "captcha_input",
+        "boundary": "验证码长度边界：3,4,5位数字",
+        "test_values": [
+          "123",
+          "1234",
+          "12345"
+        ],
+        "expected_behavior": "3和5位应失败，4位应成功"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "有效用户名和密码，首次登录成功",
+        "inputs": {
+          "username": "User_123",
+          "password": "Pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录成功",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP12"
+        ],
+        "covers_bv": [
+          "BV1",
+          "BV3"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "用户名长度3字符，无效",
+        "inputs": {
+          "username": "Abc",
+          "password": "Pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示用户名无效",
+        "covers_ep": [
+          "EP2"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC3",
+        "description": "用户名长度21字符，无效",
+        "inputs": {
+          "username": "User12345678901234567",
+          "password": "Pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示用户名无效",
+        "covers_ep": [
+          "EP3"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC4",
+        "description": "用户名以数字开头，无效",
+        "inputs": {
+          "username": "123User",
+          "password": "Pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示用户名无效",
+        "covers_ep": [
+          "EP4"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC5",
+        "description": "密码长度7字符，无效",
+        "inputs": {
+          "username": "User_123",
+          "password": "Abc123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示密码无效",
+        "covers_ep": [
+          "EP7"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC6",
+        "description": "密码缺少大写字母，无效",
+        "inputs": {
+          "username": "User_123",
+          "password": "pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示密码无效",
+        "covers_ep": [
+          "EP9"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC7",
+        "description": "连续失败2次后需要验证码，输入有效验证码",
+        "inputs": {
+          "username": "User_123",
+          "password": "WrongPass1",
+          "login_attempts": "2",
+          "captcha_required": "true",
+          "captcha_input": "1234",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败（密码错误），但验证码通过",
+        "covers_ep": [
+          "EP13",
+          "EP16"
+        ],
+        "covers_bv": [
+          "BV5",
+          "BV6"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC8",
+        "description": "连续失败3次后账户锁定15分钟",
+        "inputs": {
+          "username": "User_123",
+          "password": "WrongPass1",
+          "login_attempts": "3",
+          "captcha_required": "true",
+          "captcha_input": "1234",
+          "account_locked": "true"
+        },
+        "expected_result": "登录失败，提示账户锁定15分钟",
+        "covers_ep": [
+          "EP14"
+        ],
+        "covers_bv": [
+          "BV5"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC9",
+        "description": "连续失败5次后账户锁定24小时",
+        "inputs": {
+          "username": "User_123",
+          "password": "WrongPass1",
+          "login_attempts": "5",
+          "captcha_required": "true",
+          "captcha_input": "1234",
+          "account_locked": "true"
+        },
+        "expected_result": "登录失败，提示账户锁定24小时",
+        "covers_ep": [
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV5"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC10",
+        "description": "验证码输入无效（非4位数字）",
+        "inputs": {
+          "username": "User_123",
+          "password": "WrongPass1",
+          "login_attempts": "2",
+          "captcha_required": "true",
+          "captcha_input": "12A4",
+          "account_locked": "false"
+        },
+        "expected_result": "登录失败，提示验证码无效",
+        "covers_ep": [
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV6"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC11",
+        "description": "密码长度32字符，有效",
+        "inputs": {
+          "username": "User_123",
+          "password": "Pass123456789012345678901234567890!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录成功",
+        "covers_ep": [
+          "EP6"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "low"
+      },
+      {
+        "id": "TC12",
+        "description": "用户名包含下划线，有效",
+        "inputs": {
+          "username": "_User123",
+          "password": "Pass123!",
+          "login_attempts": "0",
+          "captcha_required": "false",
+          "captcha_input": "",
+          "account_locked": "false"
+        },
+        "expected_result": "登录成功",
+        "covers_ep": [
+          "EP1"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "low"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 18,
+      "covered_ep": 18,
+      "total_bv": 6,
+      "covered_bv": 6,
+      "total_test_cases": 12
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n用户登录系统\n\n功能需求:\nR1. 用户名验证：\n   - 长度为 4-20 个字符\n   - 只允许字母、数字和下划线\n   - 不能以数字开头\n\nR2. 密码验证：\n   - 长度为 8-32 个字符\n   - 必须包含至少一个大写字母、一个小写字母、一个数字\n   - 可选包含特殊字符（!@#$%^&*）\n\nR3. 登录尝试限制：\n   - 连续失败 3 次后锁定账户 15 分钟\n   - 连续失败 5 次后锁定账户 24 小时\n\nR4. 验证码：\n   - 连续失败 2 次后需要输入验证码\n   - 验证码为 4 位数字，有效期 60 秒\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 698,
+    "completion_tokens": 3363
+  }
+}

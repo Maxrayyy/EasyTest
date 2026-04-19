@@ -1,0 +1,718 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "score",
+        "description": "学生成绩分数",
+        "type": "numeric",
+        "constraints": "0-100之间的整数"
+      },
+      {
+        "name": "course_credit",
+        "description": "课程学分",
+        "type": "numeric",
+        "constraints": "1-6之间的整数"
+      },
+      {
+        "name": "semester_credits",
+        "description": "学期总学分",
+        "type": "numeric",
+        "constraints": "12-30之间的整数"
+      },
+      {
+        "name": "student_id",
+        "description": "学生学号",
+        "type": "string",
+        "constraints": "10位数字"
+      },
+      {
+        "name": "batch_size",
+        "description": "批量录入记录数",
+        "type": "numeric",
+        "constraints": "1-200之间的整数"
+      },
+      {
+        "name": "grade_level",
+        "description": "成绩等级",
+        "type": "enum",
+        "constraints": "A(90-100), B(80-89), C(70-79), D(60-69), F(0-59)"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "score",
+        "partition": "有效成绩：0-100之间的整数",
+        "type": "valid",
+        "representative_value": "85"
+      },
+      {
+        "id": "EP2",
+        "variable": "score",
+        "partition": "无效成绩：小于0的整数",
+        "type": "invalid",
+        "representative_value": "-5"
+      },
+      {
+        "id": "EP3",
+        "variable": "score",
+        "partition": "无效成绩：大于100的整数",
+        "type": "invalid",
+        "representative_value": "105"
+      },
+      {
+        "id": "EP4",
+        "variable": "score",
+        "partition": "无效成绩：非整数",
+        "type": "invalid",
+        "representative_value": "85.5"
+      },
+      {
+        "id": "EP5",
+        "variable": "course_credit",
+        "partition": "有效学分：1-6之间的整数",
+        "type": "valid",
+        "representative_value": "3"
+      },
+      {
+        "id": "EP6",
+        "variable": "course_credit",
+        "partition": "无效学分：小于1的整数",
+        "type": "invalid",
+        "representative_value": "0"
+      },
+      {
+        "id": "EP7",
+        "variable": "course_credit",
+        "partition": "无效学分：大于6的整数",
+        "type": "invalid",
+        "representative_value": "7"
+      },
+      {
+        "id": "EP8",
+        "variable": "semester_credits",
+        "partition": "有效学期学分：12-30之间的整数",
+        "type": "valid",
+        "representative_value": "20"
+      },
+      {
+        "id": "EP9",
+        "variable": "semester_credits",
+        "partition": "无效学期学分：小于12的整数",
+        "type": "invalid",
+        "representative_value": "10"
+      },
+      {
+        "id": "EP10",
+        "variable": "semester_credits",
+        "partition": "无效学期学分：大于30的整数",
+        "type": "invalid",
+        "representative_value": "35"
+      },
+      {
+        "id": "EP11",
+        "variable": "student_id",
+        "partition": "有效学号：10位数字",
+        "type": "valid",
+        "representative_value": "2023001001"
+      },
+      {
+        "id": "EP12",
+        "variable": "student_id",
+        "partition": "无效学号：非10位数字",
+        "type": "invalid",
+        "representative_value": "2023001"
+      },
+      {
+        "id": "EP13",
+        "variable": "student_id",
+        "partition": "无效学号：包含非数字字符",
+        "type": "invalid",
+        "representative_value": "2023A00101"
+      },
+      {
+        "id": "EP14",
+        "variable": "batch_size",
+        "partition": "有效批量大小：1-200之间的整数",
+        "type": "valid",
+        "representative_value": "100"
+      },
+      {
+        "id": "EP15",
+        "variable": "batch_size",
+        "partition": "无效批量大小：小于1的整数",
+        "type": "invalid",
+        "representative_value": "0"
+      },
+      {
+        "id": "EP16",
+        "variable": "batch_size",
+        "partition": "无效批量大小：大于200的整数",
+        "type": "invalid",
+        "representative_value": "250"
+      },
+      {
+        "id": "EP17",
+        "variable": "grade_level",
+        "partition": "有效等级：A(90-100)",
+        "type": "valid",
+        "representative_value": "95"
+      },
+      {
+        "id": "EP18",
+        "variable": "grade_level",
+        "partition": "有效等级：B(80-89)",
+        "type": "valid",
+        "representative_value": "85"
+      },
+      {
+        "id": "EP19",
+        "variable": "grade_level",
+        "partition": "有效等级：C(70-79)",
+        "type": "valid",
+        "representative_value": "75"
+      },
+      {
+        "id": "EP20",
+        "variable": "grade_level",
+        "partition": "有效等级：D(60-69)",
+        "type": "valid",
+        "representative_value": "65"
+      },
+      {
+        "id": "EP21",
+        "variable": "grade_level",
+        "partition": "有效等级：F(0-59)",
+        "type": "valid",
+        "representative_value": "45"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "score",
+        "boundary": "成绩最小值边界：0",
+        "test_values": [
+          "-1",
+          "0",
+          "1"
+        ],
+        "expected_behavior": "-1应拒绝，0和1应接受"
+      },
+      {
+        "id": "BV2",
+        "variable": "score",
+        "boundary": "成绩最大值边界：100",
+        "test_values": [
+          "99",
+          "100",
+          "101"
+        ],
+        "expected_behavior": "99和100应接受，101应拒绝"
+      },
+      {
+        "id": "BV3",
+        "variable": "score",
+        "boundary": "成绩等级边界：59-60",
+        "test_values": [
+          "58",
+          "59",
+          "60"
+        ],
+        "expected_behavior": "58和59对应F等级，60对应D等级"
+      },
+      {
+        "id": "BV4",
+        "variable": "score",
+        "boundary": "成绩等级边界：69-70",
+        "test_values": [
+          "69",
+          "70",
+          "71"
+        ],
+        "expected_behavior": "69对应D等级，70和71对应C等级"
+      },
+      {
+        "id": "BV5",
+        "variable": "score",
+        "boundary": "成绩等级边界：79-80",
+        "test_values": [
+          "79",
+          "80",
+          "81"
+        ],
+        "expected_behavior": "79对应C等级，80和81对应B等级"
+      },
+      {
+        "id": "BV6",
+        "variable": "score",
+        "boundary": "成绩等级边界：89-90",
+        "test_values": [
+          "89",
+          "90",
+          "91"
+        ],
+        "expected_behavior": "89对应B等级，90和91对应A等级"
+      },
+      {
+        "id": "BV7",
+        "variable": "course_credit",
+        "boundary": "课程学分最小值边界：1",
+        "test_values": [
+          "0",
+          "1",
+          "2"
+        ],
+        "expected_behavior": "0应拒绝，1和2应接受"
+      },
+      {
+        "id": "BV8",
+        "variable": "course_credit",
+        "boundary": "课程学分最大值边界：6",
+        "test_values": [
+          "5",
+          "6",
+          "7"
+        ],
+        "expected_behavior": "5和6应接受，7应拒绝"
+      },
+      {
+        "id": "BV9",
+        "variable": "semester_credits",
+        "boundary": "学期学分最小值边界：12",
+        "test_values": [
+          "11",
+          "12",
+          "13"
+        ],
+        "expected_behavior": "11应拒绝，12和13应接受"
+      },
+      {
+        "id": "BV10",
+        "variable": "semester_credits",
+        "boundary": "学期学分最大值边界：30",
+        "test_values": [
+          "29",
+          "30",
+          "31"
+        ],
+        "expected_behavior": "29和30应接受，31应拒绝"
+      },
+      {
+        "id": "BV11",
+        "variable": "batch_size",
+        "boundary": "批量大小最小值边界：1",
+        "test_values": [
+          "0",
+          "1",
+          "2"
+        ],
+        "expected_behavior": "0应拒绝，1和2应接受"
+      },
+      {
+        "id": "BV12",
+        "variable": "batch_size",
+        "boundary": "批量大小最大值边界：200",
+        "test_values": [
+          "199",
+          "200",
+          "201"
+        ],
+        "expected_behavior": "199和200应接受，201应拒绝"
+      },
+      {
+        "id": "BV13",
+        "variable": "student_id",
+        "boundary": "学号长度边界：9位、10位、11位",
+        "test_values": [
+          "123456789",
+          "1234567890",
+          "12345678901"
+        ],
+        "expected_behavior": "9位和11位应拒绝，10位应接受"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "正常录入有效成绩和学分",
+        "inputs": {
+          "score": "85",
+          "course_credit": "3",
+          "student_id": "2023001001"
+        },
+        "expected_result": "成绩录入成功，绩点计算为3.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP18"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "录入边界最小值成绩0分",
+        "inputs": {
+          "score": "0",
+          "course_credit": "2",
+          "student_id": "2023001002"
+        },
+        "expected_result": "成绩录入成功，绩点计算为0.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC3",
+        "description": "录入边界最大值成绩100分",
+        "inputs": {
+          "score": "100",
+          "course_credit": "4",
+          "student_id": "2023001003"
+        },
+        "expected_result": "成绩录入成功，绩点计算为4.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC4",
+        "description": "录入无效成绩-5分",
+        "inputs": {
+          "score": "-5",
+          "course_credit": "3",
+          "student_id": "2023001004"
+        },
+        "expected_result": "成绩录入失败，提示成绩无效",
+        "covers_ep": [
+          "EP2",
+          "EP5",
+          "EP11"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC5",
+        "description": "录入无效成绩105分",
+        "inputs": {
+          "score": "105",
+          "course_credit": "3",
+          "student_id": "2023001005"
+        },
+        "expected_result": "成绩录入失败，提示成绩无效",
+        "covers_ep": [
+          "EP3",
+          "EP5",
+          "EP11"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC6",
+        "description": "录入边界等级成绩59分和60分",
+        "inputs": {
+          "score": "59",
+          "course_credit": "2",
+          "student_id": "2023001006"
+        },
+        "expected_result": "成绩录入成功，绩点计算为0.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP21"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC7",
+        "description": "录入边界等级成绩60分",
+        "inputs": {
+          "score": "60",
+          "course_credit": "2",
+          "student_id": "2023001007"
+        },
+        "expected_result": "成绩录入成功，绩点计算为1.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP20"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC8",
+        "description": "录入边界学分1和6",
+        "inputs": {
+          "score": "75",
+          "course_credit": "1",
+          "student_id": "2023001008"
+        },
+        "expected_result": "成绩录入成功，绩点计算为2.0",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP19"
+        ],
+        "covers_bv": [
+          "BV7"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC9",
+        "description": "录入无效学分0",
+        "inputs": {
+          "score": "80",
+          "course_credit": "0",
+          "student_id": "2023001009"
+        },
+        "expected_result": "成绩录入失败，提示学分无效",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP11",
+          "EP18"
+        ],
+        "covers_bv": [
+          "BV7"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC10",
+        "description": "录入无效学分7",
+        "inputs": {
+          "score": "90",
+          "course_credit": "7",
+          "student_id": "2023001010"
+        },
+        "expected_result": "成绩录入失败，提示学分无效",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP11",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV8"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC11",
+        "description": "学期学分边界测试：12学分",
+        "inputs": {
+          "semester_credits": "12"
+        },
+        "expected_result": "学期学分设置成功",
+        "covers_ep": [
+          "EP8"
+        ],
+        "covers_bv": [
+          "BV9"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC12",
+        "description": "学期学分边界测试：30学分",
+        "inputs": {
+          "semester_credits": "30"
+        },
+        "expected_result": "学期学分设置成功",
+        "covers_ep": [
+          "EP8"
+        ],
+        "covers_bv": [
+          "BV10"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC13",
+        "description": "学期学分无效测试：11学分",
+        "inputs": {
+          "semester_credits": "11"
+        },
+        "expected_result": "学期学分设置失败，提示学分不足",
+        "covers_ep": [
+          "EP9"
+        ],
+        "covers_bv": [
+          "BV9"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC14",
+        "description": "批量录入边界测试：200条记录",
+        "inputs": {
+          "batch_size": "200"
+        },
+        "expected_result": "批量录入成功",
+        "covers_ep": [
+          "EP14"
+        ],
+        "covers_bv": [
+          "BV12"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC15",
+        "description": "批量录入无效测试：201条记录",
+        "inputs": {
+          "batch_size": "201"
+        },
+        "expected_result": "批量录入失败，提示超出最大限制",
+        "covers_ep": [
+          "EP16"
+        ],
+        "covers_bv": [
+          "BV12"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC16",
+        "description": "学号边界测试：10位数字",
+        "inputs": {
+          "student_id": "1234567890"
+        },
+        "expected_result": "学号验证成功",
+        "covers_ep": [
+          "EP11"
+        ],
+        "covers_bv": [
+          "BV13"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC17",
+        "description": "学号无效测试：9位数字",
+        "inputs": {
+          "student_id": "123456789"
+        },
+        "expected_result": "学号验证失败，提示学号格式错误",
+        "covers_ep": [
+          "EP12"
+        ],
+        "covers_bv": [
+          "BV13"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC18",
+        "description": "GPA计算综合测试：多门课程",
+        "inputs": {
+          "scores": [
+            "95",
+            "85",
+            "75",
+            "65",
+            "55"
+          ],
+          "credits": [
+            "4",
+            "3",
+            "2",
+            "3",
+            "2"
+          ]
+        },
+        "expected_result": "GPA计算正确：(4.0*4 + 3.0*3 + 2.0*2 + 1.0*3 + 0.0*2)/(4+3+2+3+2) = 2.36",
+        "covers_ep": [
+          "EP17",
+          "EP18",
+          "EP19",
+          "EP20",
+          "EP21"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC19",
+        "description": "重复录入成绩测试",
+        "inputs": {
+          "score": "88",
+          "course_credit": "3",
+          "student_id": "2023001011",
+          "action": "duplicate"
+        },
+        "expected_result": "第二次录入失败，提示需先删除原成绩",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP11",
+          "EP18"
+        ],
+        "covers_bv": [],
+        "priority": "medium"
+      },
+      {
+        "id": "TC20",
+        "description": "成绩查询测试：按学号查询",
+        "inputs": {
+          "student_id": "2023001012",
+          "query_type": "by_student_id"
+        },
+        "expected_result": "成功返回该学生的所有成绩记录",
+        "covers_ep": [
+          "EP11"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 21,
+      "covered_ep": 21,
+      "total_bv": 13,
+      "covered_bv": 13,
+      "total_test_cases": 20
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n学生成绩管理系统\n\n功能需求:\nR1. 成绩录入:\n   - 分数范围: 0-100 分（整数）\n   - 每门课程只能录入一次成绩，重复录入需先删除原成绩\n   - 支持批量录入，每批最多 200 条\n\nR2. GPA 计算:\n   - A: 90-100 分, 绩点 4.0\n   - B: 80-89 分, 绩点 3.0\n   - C: 70-79 分, 绩点 2.0\n   - D: 60-69 分, 绩点 1.0\n   - F: 0-59 分, 绩点 0.0\n   - GPA = 所有课程绩点的加权平均（按学分加权）\n\nR3. 学分约束:\n   - 每门课程学分范围: 1-6\n   - 每学期最多选修 30 学分\n   - 每学期最少选修 12 学分\n\nR4. 成绩查询:\n   - 支持按学号、课程名、学期查询\n   - 学号为 10 位数字\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 777,
+    "completion_tokens": 4308
+  }
+}

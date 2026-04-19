@@ -1,0 +1,565 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "product_quantity",
+        "description": "商品数量",
+        "type": "numeric",
+        "constraints": "1-99"
+      },
+      {
+        "name": "unique_products_count",
+        "description": "购物车中不同商品种类数量",
+        "type": "numeric",
+        "constraints": "0-50"
+      },
+      {
+        "name": "product_price",
+        "description": "商品单价",
+        "type": "numeric",
+        "constraints": "0.01-99999.99元"
+      },
+      {
+        "name": "order_amount_before_coupon",
+        "description": "优惠券使用前订单金额",
+        "type": "numeric",
+        "constraints": ">=0"
+      },
+      {
+        "name": "coupon_type",
+        "description": "优惠券类型",
+        "type": "enum",
+        "constraints": "无优惠券|满100减10|满300减50|满500减100"
+      },
+      {
+        "name": "order_amount_after_coupon",
+        "description": "优惠券使用后订单金额",
+        "type": "numeric",
+        "constraints": ">=0"
+      },
+      {
+        "name": "shipping_fee",
+        "description": "运费",
+        "type": "numeric",
+        "constraints": "0|5|10"
+      },
+      {
+        "name": "inventory_quantity",
+        "description": "商品库存数量",
+        "type": "numeric",
+        "constraints": ">=0"
+      },
+      {
+        "name": "requested_quantity",
+        "description": "下单请求的商品数量",
+        "type": "numeric",
+        "constraints": ">=0"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "product_quantity",
+        "partition": "有效商品数量（1-99）",
+        "type": "valid",
+        "representative_value": "50"
+      },
+      {
+        "id": "EP2",
+        "variable": "product_quantity",
+        "partition": "无效商品数量（<1）",
+        "type": "invalid",
+        "representative_value": "0"
+      },
+      {
+        "id": "EP3",
+        "variable": "product_quantity",
+        "partition": "无效商品数量（>99）",
+        "type": "invalid",
+        "representative_value": "100"
+      },
+      {
+        "id": "EP4",
+        "variable": "unique_products_count",
+        "partition": "有效商品种类数量（0-50）",
+        "type": "valid",
+        "representative_value": "25"
+      },
+      {
+        "id": "EP5",
+        "variable": "unique_products_count",
+        "partition": "无效商品种类数量（>50）",
+        "type": "invalid",
+        "representative_value": "51"
+      },
+      {
+        "id": "EP6",
+        "variable": "product_price",
+        "partition": "有效商品价格（0.01-99999.99）",
+        "type": "valid",
+        "representative_value": "500.00"
+      },
+      {
+        "id": "EP7",
+        "variable": "product_price",
+        "partition": "无效商品价格（<0.01）",
+        "type": "invalid",
+        "representative_value": "0.00"
+      },
+      {
+        "id": "EP8",
+        "variable": "product_price",
+        "partition": "无效商品价格（>99999.99）",
+        "type": "invalid",
+        "representative_value": "100000.00"
+      },
+      {
+        "id": "EP9",
+        "variable": "order_amount_before_coupon",
+        "partition": "订单金额满足优惠券条件（>=100）",
+        "type": "valid",
+        "representative_value": "200.00"
+      },
+      {
+        "id": "EP10",
+        "variable": "order_amount_before_coupon",
+        "partition": "订单金额不满足优惠券条件（<100）",
+        "type": "valid",
+        "representative_value": "50.00"
+      },
+      {
+        "id": "EP11",
+        "variable": "coupon_type",
+        "partition": "使用优惠券",
+        "type": "valid",
+        "representative_value": "满100减10"
+      },
+      {
+        "id": "EP12",
+        "variable": "coupon_type",
+        "partition": "不使用优惠券",
+        "type": "valid",
+        "representative_value": "无优惠券"
+      },
+      {
+        "id": "EP13",
+        "variable": "order_amount_after_coupon",
+        "partition": "优惠后金额<50",
+        "type": "valid",
+        "representative_value": "30.00"
+      },
+      {
+        "id": "EP14",
+        "variable": "order_amount_after_coupon",
+        "partition": "优惠后金额50-199",
+        "type": "valid",
+        "representative_value": "100.00"
+      },
+      {
+        "id": "EP15",
+        "variable": "order_amount_after_coupon",
+        "partition": "优惠后金额>=200",
+        "type": "valid",
+        "representative_value": "250.00"
+      },
+      {
+        "id": "EP16",
+        "variable": "inventory_quantity",
+        "partition": "库存充足（>=请求数量）",
+        "type": "valid",
+        "representative_value": "100"
+      },
+      {
+        "id": "EP17",
+        "variable": "inventory_quantity",
+        "partition": "库存不足（<请求数量）",
+        "type": "valid",
+        "representative_value": "5"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "product_quantity",
+        "boundary": "商品数量下边界（1）",
+        "test_values": [
+          "0",
+          "1",
+          "2"
+        ],
+        "expected_behavior": "0应失败，1和2应成功"
+      },
+      {
+        "id": "BV2",
+        "variable": "product_quantity",
+        "boundary": "商品数量上边界（99）",
+        "test_values": [
+          "98",
+          "99",
+          "100"
+        ],
+        "expected_behavior": "98和99应成功，100应失败"
+      },
+      {
+        "id": "BV3",
+        "variable": "unique_products_count",
+        "boundary": "商品种类数量上边界（50）",
+        "test_values": [
+          "49",
+          "50",
+          "51"
+        ],
+        "expected_behavior": "49和50应成功，51应失败"
+      },
+      {
+        "id": "BV4",
+        "variable": "product_price",
+        "boundary": "商品价格下边界（0.01）",
+        "test_values": [
+          "0.00",
+          "0.01",
+          "0.02"
+        ],
+        "expected_behavior": "0.00应失败，0.01和0.02应成功"
+      },
+      {
+        "id": "BV5",
+        "variable": "product_price",
+        "boundary": "商品价格上边界（99999.99）",
+        "test_values": [
+          "99999.98",
+          "99999.99",
+          "100000.00"
+        ],
+        "expected_behavior": "99999.98和99999.99应成功，100000.00应失败"
+      },
+      {
+        "id": "BV6",
+        "variable": "order_amount_before_coupon",
+        "boundary": "优惠券满100减10边界（100）",
+        "test_values": [
+          "99.99",
+          "100.00",
+          "100.01"
+        ],
+        "expected_behavior": "99.99不应享受优惠，100.00和100.01应享受10元减免"
+      },
+      {
+        "id": "BV7",
+        "variable": "order_amount_before_coupon",
+        "boundary": "优惠券满300减50边界（300）",
+        "test_values": [
+          "299.99",
+          "300.00",
+          "300.01"
+        ],
+        "expected_behavior": "299.99不应享受优惠，300.00和300.01应享受50元减免"
+      },
+      {
+        "id": "BV8",
+        "variable": "order_amount_before_coupon",
+        "boundary": "优惠券满500减100边界（500）",
+        "test_values": [
+          "499.99",
+          "500.00",
+          "500.01"
+        ],
+        "expected_behavior": "499.99不应享受优惠，500.00和500.01应享受100元减免"
+      },
+      {
+        "id": "BV9",
+        "variable": "order_amount_after_coupon",
+        "boundary": "运费计算边界（50）",
+        "test_values": [
+          "49.99",
+          "50.00",
+          "50.01"
+        ],
+        "expected_behavior": "49.99运费10元，50.00和50.01运费5元"
+      },
+      {
+        "id": "BV10",
+        "variable": "order_amount_after_coupon",
+        "boundary": "运费计算边界（200）",
+        "test_values": [
+          "199.99",
+          "200.00",
+          "200.01"
+        ],
+        "expected_behavior": "199.99运费5元，200.00和200.01免运费"
+      },
+      {
+        "id": "BV11",
+        "variable": "inventory_quantity",
+        "boundary": "库存检查边界（请求数量）",
+        "test_values": [
+          "请求数量-1",
+          "请求数量",
+          "请求数量+1"
+        ],
+        "expected_behavior": "库存少于请求数量应提示不足，等于或多于应允许下单"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "添加商品：有效商品数量边界测试",
+        "inputs": {
+          "product_quantity": "1",
+          "product_price": "10.00"
+        },
+        "expected_result": "成功添加商品到购物车",
+        "covers_ep": [
+          "EP1"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "添加商品：无效商品数量（0）",
+        "inputs": {
+          "product_quantity": "0",
+          "product_price": "10.00"
+        },
+        "expected_result": "添加失败，提示数量无效",
+        "covers_ep": [
+          "EP2"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC3",
+        "description": "添加商品：无效商品数量（100）",
+        "inputs": {
+          "product_quantity": "100",
+          "product_price": "10.00"
+        },
+        "expected_result": "添加失败，提示数量无效",
+        "covers_ep": [
+          "EP3"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC4",
+        "description": "添加商品：商品价格边界测试（0.01）",
+        "inputs": {
+          "product_quantity": "1",
+          "product_price": "0.01"
+        },
+        "expected_result": "成功添加商品到购物车",
+        "covers_ep": [
+          "EP6"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC5",
+        "description": "添加商品：无效商品价格（0.00）",
+        "inputs": {
+          "product_quantity": "1",
+          "product_price": "0.00"
+        },
+        "expected_result": "添加失败，提示价格无效",
+        "covers_ep": [
+          "EP7"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC6",
+        "description": "优惠券：订单金额99.99元使用满100减10",
+        "inputs": {
+          "order_amount_before_coupon": "99.99",
+          "coupon_type": "满100减10"
+        },
+        "expected_result": "优惠券不可用，订单金额不变",
+        "covers_ep": [
+          "EP10",
+          "EP11"
+        ],
+        "covers_bv": [
+          "BV6"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC7",
+        "description": "优惠券：订单金额100元使用满100减10",
+        "inputs": {
+          "order_amount_before_coupon": "100.00",
+          "coupon_type": "满100减10"
+        },
+        "expected_result": "成功减免10元，订单金额变为90元",
+        "covers_ep": [
+          "EP9",
+          "EP11"
+        ],
+        "covers_bv": [
+          "BV6"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC8",
+        "description": "运费计算：优惠后金额49.99元",
+        "inputs": {
+          "order_amount_after_coupon": "49.99"
+        },
+        "expected_result": "运费为10元",
+        "covers_ep": [
+          "EP13"
+        ],
+        "covers_bv": [
+          "BV9"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC9",
+        "description": "运费计算：优惠后金额50元",
+        "inputs": {
+          "order_amount_after_coupon": "50.00"
+        },
+        "expected_result": "运费为5元",
+        "covers_ep": [
+          "EP14"
+        ],
+        "covers_bv": [
+          "BV9"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC10",
+        "description": "运费计算：优惠后金额199.99元",
+        "inputs": {
+          "order_amount_after_coupon": "199.99"
+        },
+        "expected_result": "运费为5元",
+        "covers_ep": [
+          "EP14"
+        ],
+        "covers_bv": [
+          "BV10"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC11",
+        "description": "运费计算：优惠后金额200元",
+        "inputs": {
+          "order_amount_after_coupon": "200.00"
+        },
+        "expected_result": "免运费",
+        "covers_ep": [
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV10"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC12",
+        "description": "库存检查：库存充足（库存100，请求10）",
+        "inputs": {
+          "inventory_quantity": "100",
+          "requested_quantity": "10"
+        },
+        "expected_result": "允许下单",
+        "covers_ep": [
+          "EP16"
+        ],
+        "covers_bv": [
+          "BV11"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC13",
+        "description": "库存检查：库存不足（库存5，请求10）",
+        "inputs": {
+          "inventory_quantity": "5",
+          "requested_quantity": "10"
+        },
+        "expected_result": "提示库存不足",
+        "covers_ep": [
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV11"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC14",
+        "description": "综合场景：添加多种商品并使用优惠券计算运费",
+        "inputs": {
+          "product_quantity": "2",
+          "product_price": "150.00",
+          "coupon_type": "满300减50",
+          "order_amount_before_coupon": "300.00"
+        },
+        "expected_result": "订单金额300元，使用优惠券后250元，运费5元，总金额255元",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP9",
+          "EP11",
+          "EP14"
+        ],
+        "covers_bv": [
+          "BV7"
+        ],
+        "priority": "low"
+      },
+      {
+        "id": "TC15",
+        "description": "综合场景：购物车商品种类达到上限",
+        "inputs": {
+          "unique_products_count": "50"
+        },
+        "expected_result": "购物车已满，无法添加新种类商品",
+        "covers_ep": [
+          "EP4"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "medium"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 17,
+      "covered_ep": 17,
+      "total_bv": 11,
+      "covered_bv": 11,
+      "total_test_cases": 15
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n在线购物车系统\n\n功能需求:\nR1. 添加商品：\n   - 每种商品数量范围为 1-99\n   - 购物车最多容纳 50 种不同商品\n   - 商品价格范围为 0.01-99999.99 元\n\nR2. 优惠券：\n   - 满 100 减 10\n   - 满 300 减 50\n   - 满 500 减 100\n   - 每次结算只能使用一张优惠券\n\nR3. 运费计算：\n   - 订单金额 < 50 元：运费 10 元\n   - 订单金额 50-199 元：运费 5 元\n   - 订单金额 >= 200 元：免运费\n   - 优惠券减免后的金额用于计算运费\n\nR4. 库存检查：\n   - 下单时检查库存，库存不足则提示用户\n   - 支持部分发货\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 725,
+    "completion_tokens": 3761
+  }
+}

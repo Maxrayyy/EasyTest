@@ -35,6 +35,7 @@ async def call_llm(system_prompt: str, user_prompt: str, model: str | None = Non
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.2,
+        max_tokens=8192,
         response_format={"type": "json_object"},
     )
 

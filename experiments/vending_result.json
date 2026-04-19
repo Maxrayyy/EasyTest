@@ -1,0 +1,524 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "product_type",
+        "description": "商品类型",
+        "type": "enum",
+        "constraints": "饮料、零食、热食"
+      },
+      {
+        "name": "product_price",
+        "description": "商品价格",
+        "type": "numeric",
+        "constraints": "饮料：1.50-3.00元，零食：2.00-4.50元，热食：5.00-10.00元"
+      },
+      {
+        "name": "payment_amount",
+        "description": "支付金额",
+        "type": "numeric",
+        "constraints": "硬币：0.10、0.25、0.50、1.00元；纸币：5.00、10.00元"
+      },
+      {
+        "name": "change_amount",
+        "description": "找零金额",
+        "type": "numeric",
+        "constraints": "找零不超过5.00元"
+      },
+      {
+        "name": "inventory_status",
+        "description": "库存状态",
+        "type": "boolean",
+        "constraints": "有库存、售罄"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "product_type",
+        "partition": "有效商品类型",
+        "type": "valid",
+        "representative_value": "饮料"
+      },
+      {
+        "id": "EP2",
+        "variable": "product_type",
+        "partition": "无效商品类型",
+        "type": "invalid",
+        "representative_value": "其他商品"
+      },
+      {
+        "id": "EP3",
+        "variable": "product_price",
+        "partition": "饮料价格有效范围",
+        "type": "valid",
+        "representative_value": "2.00"
+      },
+      {
+        "id": "EP4",
+        "variable": "product_price",
+        "partition": "饮料价格无效范围（低于下限）",
+        "type": "invalid",
+        "representative_value": "1.00"
+      },
+      {
+        "id": "EP5",
+        "variable": "product_price",
+        "partition": "饮料价格无效范围（高于上限）",
+        "type": "invalid",
+        "representative_value": "4.00"
+      },
+      {
+        "id": "EP6",
+        "variable": "product_price",
+        "partition": "零食价格有效范围",
+        "type": "valid",
+        "representative_value": "3.00"
+      },
+      {
+        "id": "EP7",
+        "variable": "product_price",
+        "partition": "热食价格有效范围",
+        "type": "valid",
+        "representative_value": "7.00"
+      },
+      {
+        "id": "EP8",
+        "variable": "payment_amount",
+        "partition": "有效支付金额（硬币）",
+        "type": "valid",
+        "representative_value": "1.00"
+      },
+      {
+        "id": "EP9",
+        "variable": "payment_amount",
+        "partition": "有效支付金额（纸币）",
+        "type": "valid",
+        "representative_value": "5.00"
+      },
+      {
+        "id": "EP10",
+        "variable": "payment_amount",
+        "partition": "无效支付金额（非接受面额）",
+        "type": "invalid",
+        "representative_value": "2.00"
+      },
+      {
+        "id": "EP11",
+        "variable": "payment_amount",
+        "partition": "支付金额小于商品价格",
+        "type": "invalid",
+        "representative_value": "1.00"
+      },
+      {
+        "id": "EP12",
+        "variable": "payment_amount",
+        "partition": "支付金额等于商品价格",
+        "type": "valid",
+        "representative_value": "2.00"
+      },
+      {
+        "id": "EP13",
+        "variable": "payment_amount",
+        "partition": "支付金额大于商品价格但找零不超过5元",
+        "type": "valid",
+        "representative_value": "5.00"
+      },
+      {
+        "id": "EP14",
+        "variable": "payment_amount",
+        "partition": "支付金额大于商品价格且找零超过5元",
+        "type": "invalid",
+        "representative_value": "15.00"
+      },
+      {
+        "id": "EP15",
+        "variable": "change_amount",
+        "partition": "找零金额有效范围（不超过5元）",
+        "type": "valid",
+        "representative_value": "3.00"
+      },
+      {
+        "id": "EP16",
+        "variable": "change_amount",
+        "partition": "找零金额无效范围（超过5元）",
+        "type": "invalid",
+        "representative_value": "6.00"
+      },
+      {
+        "id": "EP17",
+        "variable": "inventory_status",
+        "partition": "有库存",
+        "type": "valid",
+        "representative_value": "true"
+      },
+      {
+        "id": "EP18",
+        "variable": "inventory_status",
+        "partition": "售罄",
+        "type": "invalid",
+        "representative_value": "false"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "product_price",
+        "boundary": "饮料价格下限",
+        "test_values": [
+          "1.49",
+          "1.50",
+          "1.51"
+        ],
+        "expected_behavior": "1.49无效，1.50有效，1.51有效"
+      },
+      {
+        "id": "BV2",
+        "variable": "product_price",
+        "boundary": "饮料价格上限",
+        "test_values": [
+          "2.99",
+          "3.00",
+          "3.01"
+        ],
+        "expected_behavior": "2.99有效，3.00有效，3.01无效"
+      },
+      {
+        "id": "BV3",
+        "variable": "product_price",
+        "boundary": "零食价格下限",
+        "test_values": [
+          "1.99",
+          "2.00",
+          "2.01"
+        ],
+        "expected_behavior": "1.99无效，2.00有效，2.01有效"
+      },
+      {
+        "id": "BV4",
+        "variable": "product_price",
+        "boundary": "零食价格上限",
+        "test_values": [
+          "4.49",
+          "4.50",
+          "4.51"
+        ],
+        "expected_behavior": "4.49有效，4.50有效，4.51无效"
+      },
+      {
+        "id": "BV5",
+        "variable": "product_price",
+        "boundary": "热食价格下限",
+        "test_values": [
+          "4.99",
+          "5.00",
+          "5.01"
+        ],
+        "expected_behavior": "4.99无效，5.00有效，5.01有效"
+      },
+      {
+        "id": "BV6",
+        "variable": "product_price",
+        "boundary": "热食价格上限",
+        "test_values": [
+          "9.99",
+          "10.00",
+          "10.01"
+        ],
+        "expected_behavior": "9.99有效，10.00有效，10.01无效"
+      },
+      {
+        "id": "BV7",
+        "variable": "change_amount",
+        "boundary": "找零金额上限",
+        "test_values": [
+          "4.99",
+          "5.00",
+          "5.01"
+        ],
+        "expected_behavior": "4.99有效，5.00有效，5.01无效"
+      },
+      {
+        "id": "BV8",
+        "variable": "payment_amount",
+        "boundary": "支付金额等于商品价格",
+        "test_values": [
+          "2.00",
+          "2.01",
+          "1.99"
+        ],
+        "expected_behavior": "2.00有效（无需找零），2.01有效（找零0.01），1.99无效（金额不足）"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "选择饮料，价格1.50元，支付1.50元硬币，有库存",
+        "inputs": {
+          "product_type": "饮料",
+          "product_price": 1.5,
+          "payment_amount": 1.5,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，无需找零",
+        "covers_ep": [
+          "EP1",
+          "EP3",
+          "EP8",
+          "EP12",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "选择零食，价格2.00元，支付2.00元硬币，有库存",
+        "inputs": {
+          "product_type": "零食",
+          "product_price": 2.0,
+          "payment_amount": 2.0,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，无需找零",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP8",
+          "EP12",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC3",
+        "description": "选择热食，价格5.00元，支付5.00元纸币，有库存",
+        "inputs": {
+          "product_type": "热食",
+          "product_price": 5.0,
+          "payment_amount": 5.0,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，无需找零",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP9",
+          "EP12",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV5"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC4",
+        "description": "选择饮料，价格3.00元，支付5.00元纸币，有库存",
+        "inputs": {
+          "product_type": "饮料",
+          "product_price": 3.0,
+          "payment_amount": 5.0,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，找零2.00元",
+        "covers_ep": [
+          "EP1",
+          "EP3",
+          "EP9",
+          "EP13",
+          "EP15",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC5",
+        "description": "选择零食，价格4.50元，支付10.00元纸币，有库存",
+        "inputs": {
+          "product_type": "零食",
+          "product_price": 4.5,
+          "payment_amount": 10.0,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，找零5.50元（超过5元，应拒绝交易）",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP9",
+          "EP14",
+          "EP16",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV4",
+          "BV7"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC6",
+        "description": "选择热食，价格10.00元，支付10.00元纸币，有库存",
+        "inputs": {
+          "product_type": "热食",
+          "product_price": 10.0,
+          "payment_amount": 10.0,
+          "inventory_status": true
+        },
+        "expected_result": "交易成功，无需找零",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP9",
+          "EP12",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV6"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC7",
+        "description": "选择饮料，价格2.00元，支付1.00元硬币，有库存",
+        "inputs": {
+          "product_type": "饮料",
+          "product_price": 2.0,
+          "payment_amount": 1.0,
+          "inventory_status": true
+        },
+        "expected_result": "支付金额不足，提示用户",
+        "covers_ep": [
+          "EP1",
+          "EP3",
+          "EP8",
+          "EP11",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV8"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC8",
+        "description": "选择零食，价格3.00元，支付2.00元硬币（非接受面额），有库存",
+        "inputs": {
+          "product_type": "零食",
+          "product_price": 3.0,
+          "payment_amount": 2.0,
+          "inventory_status": true
+        },
+        "expected_result": "无效支付金额，拒绝交易",
+        "covers_ep": [
+          "EP1",
+          "EP6",
+          "EP10",
+          "EP17"
+        ],
+        "priority": "low"
+      },
+      {
+        "id": "TC9",
+        "description": "选择热食，价格7.00元，支付10.00元纸币，售罄",
+        "inputs": {
+          "product_type": "热食",
+          "product_price": 7.0,
+          "payment_amount": 10.0,
+          "inventory_status": false
+        },
+        "expected_result": "商品售罄，退还10.00元",
+        "covers_ep": [
+          "EP1",
+          "EP7",
+          "EP9",
+          "EP13",
+          "EP18"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC10",
+        "description": "选择无效商品类型（如日用品），价格5.00元，支付5.00元纸币，有库存",
+        "inputs": {
+          "product_type": "日用品",
+          "product_price": 5.0,
+          "payment_amount": 5.0,
+          "inventory_status": true
+        },
+        "expected_result": "无效商品类型，拒绝交易",
+        "covers_ep": [
+          "EP2",
+          "EP17"
+        ],
+        "priority": "low"
+      },
+      {
+        "id": "TC11",
+        "description": "选择饮料，价格1.49元（低于下限），支付1.50元硬币，有库存",
+        "inputs": {
+          "product_type": "饮料",
+          "product_price": 1.49,
+          "payment_amount": 1.5,
+          "inventory_status": true
+        },
+        "expected_result": "无效价格，拒绝交易",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP8",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC12",
+        "description": "选择零食，价格4.51元（高于上限），支付5.00元纸币，有库存",
+        "inputs": {
+          "product_type": "零食",
+          "product_price": 4.51,
+          "payment_amount": 5.0,
+          "inventory_status": true
+        },
+        "expected_result": "无效价格，拒绝交易",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP9",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "medium"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 18,
+      "covered_ep": 18,
+      "total_bv": 8,
+      "covered_bv": 8,
+      "total_test_cases": 12
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n智能自动售货机系统\n\n功能需求:\nR1. 商品选择：售货机提供三类商品：\n   - 饮料（价格范围：1.50-3.00元）\n   - 零食（价格范围：2.00-4.50元）\n   - 热食（价格范围：5.00-10.00元）\n\nR2. 支付方式：接受以下支付方式：\n   - 硬币：0.10元、0.25元、0.50元、1.00元\n   - 纸币：5.00元、10.00元\n\nR3. 支付约束：\n   - 投入金额必须大于等于商品价格\n   - 机器只能找零不超过5.00元，超过则拒绝交易\n\nR4. 库存约束：\n   - 商品可能在支付过程中售罄\n   - 售罄时需提示用户并退还已投入金额\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 717,
+    "completion_tokens": 3404
+  }
+}

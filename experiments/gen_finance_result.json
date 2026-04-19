@@ -1,0 +1,685 @@
+{
+  "result": {
+    "input_variables": [
+      {
+        "name": "transfer_amount",
+        "description": "转账金额",
+        "type": "numeric",
+        "constraints": "0.01-500000.00元"
+      },
+      {
+        "name": "daily_total_amount",
+        "description": "每日累计转账金额",
+        "type": "numeric",
+        "constraints": "≤1000000.00元"
+      },
+      {
+        "name": "daily_transfer_count",
+        "description": "每日转账笔数",
+        "type": "numeric",
+        "constraints": "≤50笔"
+      },
+      {
+        "name": "transfer_type",
+        "description": "转账类型",
+        "type": "enum",
+        "constraints": "同行转账、跨行转账"
+      },
+      {
+        "name": "account_balance",
+        "description": "账户余额",
+        "type": "numeric",
+        "constraints": "≥0"
+      },
+      {
+        "name": "receiver_account",
+        "description": "收款账号",
+        "type": "string",
+        "constraints": "16-19位纯数字，不能与转出账号相同"
+      },
+      {
+        "name": "sender_account",
+        "description": "转出账号",
+        "type": "string",
+        "constraints": "16-19位纯数字"
+      }
+    ],
+    "equivalence_partitions": [
+      {
+        "id": "EP1",
+        "variable": "transfer_amount",
+        "partition": "有效金额：0.01-500000.00元",
+        "type": "valid",
+        "representative_value": "250000.00"
+      },
+      {
+        "id": "EP2",
+        "variable": "transfer_amount",
+        "partition": "无效金额：<0.01元",
+        "type": "invalid",
+        "representative_value": "0.00"
+      },
+      {
+        "id": "EP3",
+        "variable": "transfer_amount",
+        "partition": "无效金额：>500000.00元",
+        "type": "invalid",
+        "representative_value": "500001.00"
+      },
+      {
+        "id": "EP4",
+        "variable": "daily_total_amount",
+        "partition": "有效累计金额：≤1000000.00元",
+        "type": "valid",
+        "representative_value": "500000.00"
+      },
+      {
+        "id": "EP5",
+        "variable": "daily_total_amount",
+        "partition": "无效累计金额：>1000000.00元",
+        "type": "invalid",
+        "representative_value": "1000001.00"
+      },
+      {
+        "id": "EP6",
+        "variable": "daily_transfer_count",
+        "partition": "有效笔数：≤50笔",
+        "type": "valid",
+        "representative_value": "25"
+      },
+      {
+        "id": "EP7",
+        "variable": "daily_transfer_count",
+        "partition": "无效笔数：>50笔",
+        "type": "invalid",
+        "representative_value": "51"
+      },
+      {
+        "id": "EP8",
+        "variable": "transfer_type",
+        "partition": "同行转账",
+        "type": "valid",
+        "representative_value": "同行"
+      },
+      {
+        "id": "EP9",
+        "variable": "transfer_type",
+        "partition": "跨行转账",
+        "type": "valid",
+        "representative_value": "跨行"
+      },
+      {
+        "id": "EP10",
+        "variable": "transfer_amount",
+        "partition": "跨行转账金额≤5000元",
+        "type": "valid",
+        "representative_value": "3000.00"
+      },
+      {
+        "id": "EP11",
+        "variable": "transfer_amount",
+        "partition": "跨行转账金额5000-50000元",
+        "type": "valid",
+        "representative_value": "25000.00"
+      },
+      {
+        "id": "EP12",
+        "variable": "transfer_amount",
+        "partition": "跨行转账金额>50000元",
+        "type": "valid",
+        "representative_value": "100000.00"
+      },
+      {
+        "id": "EP13",
+        "variable": "account_balance",
+        "partition": "余额充足",
+        "type": "valid",
+        "representative_value": "1000000.00"
+      },
+      {
+        "id": "EP14",
+        "variable": "account_balance",
+        "partition": "余额不足",
+        "type": "invalid",
+        "representative_value": "100.00"
+      },
+      {
+        "id": "EP15",
+        "variable": "receiver_account",
+        "partition": "有效账号：16-19位纯数字",
+        "type": "valid",
+        "representative_value": "1234567890123456"
+      },
+      {
+        "id": "EP16",
+        "variable": "receiver_account",
+        "partition": "无效账号：长度<16位",
+        "type": "invalid",
+        "representative_value": "123456789012345"
+      },
+      {
+        "id": "EP17",
+        "variable": "receiver_account",
+        "partition": "无效账号：长度>19位",
+        "type": "invalid",
+        "representative_value": "12345678901234567890"
+      },
+      {
+        "id": "EP18",
+        "variable": "receiver_account",
+        "partition": "无效账号：包含非数字字符",
+        "type": "invalid",
+        "representative_value": "123456789012345a"
+      },
+      {
+        "id": "EP19",
+        "variable": "receiver_account",
+        "partition": "无效账号：与转出账号相同",
+        "type": "invalid",
+        "representative_value": "1234567890123456"
+      }
+    ],
+    "boundary_values": [
+      {
+        "id": "BV1",
+        "variable": "transfer_amount",
+        "boundary": "单笔转账金额下限边界",
+        "test_values": [
+          "0.00",
+          "0.01",
+          "0.02"
+        ],
+        "expected_behavior": "0.00应拒绝，0.01和0.02应接受"
+      },
+      {
+        "id": "BV2",
+        "variable": "transfer_amount",
+        "boundary": "单笔转账金额上限边界",
+        "test_values": [
+          "499999.99",
+          "500000.00",
+          "500000.01"
+        ],
+        "expected_behavior": "499999.99和500000.00应接受，500000.01应拒绝"
+      },
+      {
+        "id": "BV3",
+        "variable": "daily_total_amount",
+        "boundary": "每日累计转账金额上限边界",
+        "test_values": [
+          "999999.99",
+          "1000000.00",
+          "1000000.01"
+        ],
+        "expected_behavior": "999999.99和1000000.00应接受，1000000.01应拒绝"
+      },
+      {
+        "id": "BV4",
+        "variable": "daily_transfer_count",
+        "boundary": "每日转账笔数上限边界",
+        "test_values": [
+          "49",
+          "50",
+          "51"
+        ],
+        "expected_behavior": "49和50笔应接受，51笔应拒绝"
+      },
+      {
+        "id": "BV5",
+        "variable": "transfer_amount",
+        "boundary": "跨行转账手续费边界：≤5000元",
+        "test_values": [
+          "4999.99",
+          "5000.00",
+          "5000.01"
+        ],
+        "expected_behavior": "4999.99和5000.00手续费2元，5000.01手续费5元"
+      },
+      {
+        "id": "BV6",
+        "variable": "transfer_amount",
+        "boundary": "跨行转账手续费边界：5000-50000元",
+        "test_values": [
+          "49999.99",
+          "50000.00",
+          "50000.01"
+        ],
+        "expected_behavior": "49999.99和50000.00手续费5元，50000.01手续费10元"
+      },
+      {
+        "id": "BV7",
+        "variable": "account_balance",
+        "boundary": "账户余额边界",
+        "test_values": [
+          "0.00",
+          "0.01",
+          "100.00"
+        ],
+        "expected_behavior": "余额0.00应拒绝转账，0.01和100.00根据转账金额判断"
+      },
+      {
+        "id": "BV8",
+        "variable": "receiver_account",
+        "boundary": "账号长度下限边界",
+        "test_values": [
+          "123456789012345",
+          "1234567890123456",
+          "12345678901234567"
+        ],
+        "expected_behavior": "15位应拒绝，16位和17位应接受"
+      },
+      {
+        "id": "BV9",
+        "variable": "receiver_account",
+        "boundary": "账号长度上限边界",
+        "test_values": [
+          "1234567890123456789",
+          "12345678901234567890",
+          "12345678901234567891"
+        ],
+        "expected_behavior": "19位和20位应拒绝，21位应拒绝"
+      }
+    ],
+    "test_cases": [
+      {
+        "id": "TC1",
+        "description": "同行转账，金额在有效范围内，余额充足，账号有效且不同",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，无手续费",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC2",
+        "description": "跨行转账金额≤5000元，余额充足，账号有效",
+        "inputs": {
+          "transfer_amount": "3000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "跨行",
+          "account_balance": "10000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，手续费2元",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP9",
+          "EP10",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC3",
+        "description": "跨行转账金额5000-50000元，余额充足，账号有效",
+        "inputs": {
+          "transfer_amount": "25000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "跨行",
+          "account_balance": "50000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，手续费5元",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP9",
+          "EP11",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC4",
+        "description": "跨行转账金额>50000元，余额充足，账号有效",
+        "inputs": {
+          "transfer_amount": "100000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "跨行",
+          "account_balance": "200000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，手续费10元",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP9",
+          "EP12",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [],
+        "priority": "high"
+      },
+      {
+        "id": "TC5",
+        "description": "转账金额低于下限0.01元",
+        "inputs": {
+          "transfer_amount": "0.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "1000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示金额无效",
+        "covers_ep": [
+          "EP2",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV1"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC6",
+        "description": "转账金额高于上限500000.00元",
+        "inputs": {
+          "transfer_amount": "500001.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "1000000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示金额超限",
+        "covers_ep": [
+          "EP3",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV2"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC7",
+        "description": "每日累计转账金额超过上限1000000.00元",
+        "inputs": {
+          "transfer_amount": "100000.00",
+          "daily_total_amount": "900000.00",
+          "daily_transfer_count": "10",
+          "transfer_type": "同行",
+          "account_balance": "200000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示累计金额超限",
+        "covers_ep": [
+          "EP1",
+          "EP5",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV3"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC8",
+        "description": "每日转账笔数超过上限50笔",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "50",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示笔数超限",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP7",
+          "EP8",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV4"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC9",
+        "description": "余额不足，转账金额大于账户余额",
+        "inputs": {
+          "transfer_amount": "500.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "100.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示余额不足",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP14",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV7"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC10",
+        "description": "收款账号长度小于16位",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "123456789012345",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示账号无效",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP16"
+        ],
+        "covers_bv": [
+          "BV8"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC11",
+        "description": "收款账号长度大于19位",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "12345678901234567890",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示账号无效",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP17"
+        ],
+        "covers_bv": [
+          "BV9"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": "TC12",
+        "description": "收款账号包含非数字字符",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "123456789012345a",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "拒绝转账，提示账号无效",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP18"
+        ],
+        "covers_bv": [],
+        "priority": "medium"
+      },
+      {
+        "id": "TC13",
+        "description": "收款账号与转出账号相同",
+        "inputs": {
+          "transfer_amount": "1000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "同行",
+          "account_balance": "5000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "1234567890123456"
+        },
+        "expected_result": "拒绝转账，提示账号不能相同",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP8",
+          "EP13",
+          "EP19"
+        ],
+        "covers_bv": [],
+        "priority": "medium"
+      },
+      {
+        "id": "TC14",
+        "description": "跨行转账金额边界5000元，测试手续费计算",
+        "inputs": {
+          "transfer_amount": "5000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "跨行",
+          "account_balance": "10000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，手续费2元",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP9",
+          "EP10",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV5"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": "TC15",
+        "description": "跨行转账金额边界50000元，测试手续费计算",
+        "inputs": {
+          "transfer_amount": "50000.00",
+          "daily_total_amount": "0.00",
+          "daily_transfer_count": "0",
+          "transfer_type": "跨行",
+          "account_balance": "100000.00",
+          "receiver_account": "1234567890123456",
+          "sender_account": "6543210987654321"
+        },
+        "expected_result": "转账成功，手续费5元",
+        "covers_ep": [
+          "EP1",
+          "EP4",
+          "EP6",
+          "EP9",
+          "EP11",
+          "EP13",
+          "EP15"
+        ],
+        "covers_bv": [
+          "BV6"
+        ],
+        "priority": "high"
+      }
+    ],
+    "coverage_summary": {
+      "total_ep": 19,
+      "covered_ep": 19,
+      "total_bv": 9,
+      "covered_bv": 9,
+      "total_test_cases": 15
+    }
+  },
+  "model": "deepseek-chat",
+  "prompt_used": {
+    "system": "You are an expert software testing assistant specializing in black-box testing techniques.\nYour task is to analyze system requirements and generate:\n1. Equivalence Partitioning (EP) - 等价类划分\n2. Boundary Value Analysis (BVA) - 边界值分析\n3. Concrete Test Cases - 具体测试用例\n\nAlways return your response as valid JSON. Use English for field names but Chinese for descriptions.",
+    "user": "请分析以下系统需求，生成黑盒测试产物。\n\n## 系统需求:\n银行转账系统\n\n功能需求:\nR1. 转账金额:\n   - 单笔转账金额范围: 0.01-500000.00 元\n   - 每日累计转账上限: 1000000.00 元\n   - 每日转账笔数上限: 50 笔\n\nR2. 手续费计算:\n   - 同行转账: 免手续费\n   - 跨行转账金额 <= 5000 元: 手续费 2 元/笔\n   - 跨行转账金额 5000-50000 元: 手续费 5 元/笔\n   - 跨行转账金额 > 50000 元: 手续费 10 元/笔\n\nR3. 账户余额:\n   - 转账后账户余额不能为负数\n   - 余额不足时拒绝转账并提示\n\nR4. 收款账号验证:\n   - 账号为 16-19 位纯数字\n   - 收款账号不能与转出账号相同\n\n## 要求使用的测试技术: EP, BVA, TestCases\n\n请严格按照以下 JSON 格式返回结果:\n\n{\n  \"input_variables\": [\n    {\n      \"name\": \"变量名\",\n      \"description\": \"变量描述\",\n      \"type\": \"numeric|string|boolean|enum\",\n      \"constraints\": \"约束条件\"\n    }\n  ],\n  \"equivalence_partitions\": [\n    {\n      \"id\": \"EP1\",\n      \"variable\": \"对应变量名\",\n      \"partition\": \"分区描述\",\n      \"type\": \"valid|invalid\",\n      \"representative_value\": \"代表值\"\n    }\n  ],\n  \"boundary_values\": [\n    {\n      \"id\": \"BV1\",\n      \"variable\": \"对应变量名\",\n      \"boundary\": \"边界描述\",\n      \"test_values\": [\"值1\", \"值2\", \"值3\"],\n      \"expected_behavior\": \"预期行为\"\n    }\n  ],\n  \"test_cases\": [\n    {\n      \"id\": \"TC1\",\n      \"description\": \"测试场景描述\",\n      \"inputs\": {\"变量1\": \"值1\", \"变量2\": \"值2\"},\n      \"expected_result\": \"预期结果\",\n      \"covers_ep\": [\"EP1\", \"EP2\"],\n      \"covers_bv\": [\"BV1\"],\n      \"priority\": \"high|medium|low\"\n    }\n  ],\n  \"coverage_summary\": {\n    \"total_ep\": 0,\n    \"covered_ep\": 0,\n    \"total_bv\": 0,\n    \"covered_bv\": 0,\n    \"total_test_cases\": 0\n  }\n}\n\n要求:\n- 至少生成 10 个测试用例，覆盖所有等价类和边界值\n- 包含有效和无效测试用例\n- 确保边界条件被覆盖\n- 描述使用中文"
+  },
+  "usage": {
+    "prompt_tokens": 736,
+    "completion_tokens": 4785
+  }
+}
