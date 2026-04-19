@@ -88,7 +88,7 @@ def run_example(name, requirements):
 
     data = resp.json()
     # Save full response
-    with open(f"D:/code/EasyTest/experiments/{name}_result.json", "w", encoding="utf-8") as f:
+    with open(f"D:/code/EasyTest/experiments/accuracy/{name}_result.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     # Print summary

@@ -39,7 +39,7 @@ def run_once(run_id):
     data = resp.json()
     result = data["result"]
 
-    with open(f"D:/code/EasyTest/experiments/consistency_run{run_id}.json", "w", encoding="utf-8") as f:
+    with open(f"D:/code/EasyTest/experiments/consistency/consistency_run{run_id}.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     vars_count = len(result.get("input_variables", []))
@@ -93,6 +93,6 @@ if __name__ == "__main__":
         print(f"  Varying: {sorted(all_vars - common_vars)}")
 
     # Save summary
-    with open("D:/code/EasyTest/experiments/consistency_summary.json", "w", encoding="utf-8") as f:
+    with open("D:/code/EasyTest/experiments/consistency/consistency_summary.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     print("\nDone!")

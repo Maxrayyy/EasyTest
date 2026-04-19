@@ -95,7 +95,7 @@ def run_domain(name, requirements):
     data = resp.json()
     result = data["result"]
 
-    with open(f"D:/code/EasyTest/experiments/gen_{name}_result.json", "w", encoding="utf-8") as f:
+    with open(f"D:/code/EasyTest/experiments/generalizability/gen_{name}_result.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     vars_count = len(result.get("input_variables", []))
@@ -145,6 +145,6 @@ if __name__ == "__main__":
     for r in results:
         print(f"{r['domain']:<12} {r['vars']:<6} {r['ep']:<5} {r['bv']:<5} {r['tc']:<5} {r['time']:<8}")
 
-    with open("D:/code/EasyTest/experiments/generalizability_summary.json", "w", encoding="utf-8") as f:
+    with open("D:/code/EasyTest/experiments/generalizability/generalizability_summary.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     print("\nDone!")
